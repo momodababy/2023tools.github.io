@@ -1,1 +1,722 @@
-域名生成
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>域名生成</title>
+    <style>
+        * {margin:0;padding:0;border:0;outline:0;box-sizing:border-box;}
+        textarea {resize:none;}
+        html,body {width:100%;height:100%;}
+        body {padding:10px;}
+        .container{
+            display: flex;
+
+            width: 100%;
+            height: 90%;
+            border: 1px solid #eee;
+        }
+        .left{
+            width: 300px;
+            height: 100%;
+            border-right: 1px solid #eee;
+        }
+        .left .setOuterBox{
+
+            padding-left: 20px;
+        }
+        .right{
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .btnBox{
+            flex: 1;
+            overflow: auto;
+        }
+        h3 {
+            line-height: 1;
+            padding-top: 15px;
+            text-align: center;
+        }
+        .setBox {
+            margin-top: 20px;
+        }
+        input[type=text]{
+            outline-style: none ;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 5px 6px;
+            width: 200px;
+            font-family: "Microsoft soft";
+        }
+        .title {
+            margin-bottom: 10px;
+        }
+
+
+        /** 按钮特效 */
+        .buttonClass {
+          font-size:15px;
+          font-family:Arial;
+          width:100px;
+          height:40px;
+          border: 1px solid #333333;
+          color:#14396a;
+          font-weight:bold;
+          border-top-left-radius:6px;
+          border-top-right-radius:6px;
+          border-bottom-left-radius:6px;
+          border-bottom-right-radius:6px;
+          box-shadow:inset 0px 1px 0px 0px #fff6af;
+          text-shadow:inset 0px 1px 0px #ffee66;
+          background:linear-gradient(#ffec64, #ffab23);
+          cursor: pointer;
+        }
+
+        .buttonClass:hover {
+          background: linear-gradient(#ffab23, #ffec64);
+        }
+
+        .btnBox{
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .g_btn{
+            margin: 10px;
+            padding: 10px 16px;
+            border: 1px solid #7c9ebb;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .g_btn:hover {
+            border-color: #9ee1dc;
+        }
+
+        .right h3 {
+            position: relative;
+        }
+        .cp-succ {
+            font-weight: normal;
+            font-size: 16px;
+            color:#e32e4e;
+            margin-left:10px;
+            position: absolute;
+            top: 5px;
+            left: 30px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- <a href="/">返回首页</a><br> -->
+<div class="container">
+    <div class="left">
+        <h3>设置项</h3>
+        <div class="setOuterBox">
+            <div class="setBox">
+                <div class="title"><h4>1. 范围</h4></div>
+                <div class="setInnerBox">
+                    <input type="radio" name="fw" value="3" id="fw3" checked> <label for="fw3">1-100</label>
+                    <input type="radio" name="fw" value="4" id="fw4"> <label for="fw4">1-1000</label>
+                    <input type="radio" name="fw" value="5" id="fw5"> <label for="fw5">1-10000</label><br>
+                    <input type="radio" name="fw" value="1" id="fw1"> <label for="fw1">01-10</label>
+                    <input type="radio" name="fw" value="2" id="fw2"> <label for="fw2">001-100</label>
+                    <input type="radio" name="fw" value="6" id="fw6"> <label for="fw6">0001-1000</label><br>
+                    <input type="radio" name="fw" value="7" id="fw7"> <label for="fw7">00001-10000</label>
+                    <input type="radio" name="fw" value="19" id="fw19"> <label for="fw19">aaaa-zzzz</label><br>
+                    <input type="radio" name="fw" value="13" id="fw13"> <label for="fw13">0-9</label>
+                    <input type="radio" name="fw" value="15" id="fw15"> <label for="fw15">00-09</label>
+                    <input type="radio" name="fw" value="16" id="fw16"> <label for="fw16">000-009</label><br>
+                    <input type="radio" name="fw" value="11" id="fw11"> <label for="fw11">00-99</label>
+                    <input type="radio" name="fw" value="12" id="fw12"> <label for="fw12">000-999</label>
+                    <input type="radio" name="fw" value="17" id="fw17"> <label for="fw17">0000-9999</label><br>
+                    <input type="radio" name="fw" value="8" id="fw8"> <label for="fw8">a-z</label>
+                    <input type="radio" name="fw" value="9" id="fw9"> <label for="fw9">aa-zz</label>
+                    <input type="radio" name="fw" value="10" id="fw10"> <label for="fw10">aaa-zzz</label><br>
+                    <input type="radio" name="fw" value="14" id="fw14"> <label for="fw14">地区首字母</label>
+                    <input type="radio" name="fw" value="18" id="fw18"> <label for="fw18">(a-z)(0-9)</label>
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>2. 前缀（不加点）</h4></div>
+                <div class="setInnerBox">
+                    <input type="text" name="prefix" class="prefix" value="" id="" placeholder="填写前缀">
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>3. 前置内容</h4></div>
+                <div class="setInnerBox">
+                    <input type="text" name="preContent" class="preContent" value="admin" id="" placeholder="填写前置内容">
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>3. 后置内容</h4></div>
+                <div class="setInnerBox">
+                    <input type="text" name="sufContent" class="sufContent" value="" id="" placeholder="填写后置内容">
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>4. 域名后缀（不加点）</h4></div>
+                <div class="setInnerBox">
+                    <input type="text" name="suffix" class="suffix" value="com" id="" placeholder="填写域名后缀">
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>5. 每组数量</h4></div>
+                <div class="setInnerBox">
+                    <input type="text" name="gnu" class="gnu" value="20" id="" placeholder="填写每组数量"><br>
+                </div>
+            </div>
+            <div class="setBox">
+                <div class="title"><h4>6. 是否直接跳转</h4></div>
+                <div class="setInnerBox">
+                    <input type="radio" name="isjump" value="1" id="ij1"> <label for="ij1">否</label><br>
+                    <input type="radio" name="isjump" value="2" id="ij2" checked> <label for="ij2">是</label>
+                </div>
+            </div>
+            <div class="setBox">
+                <button class="tj buttonClass">生成域名</button>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <h3>
+            按钮组
+            <!-- <span class="cp-succ" style="display: none;">复制成功！</span> -->
+            <span class="cp-succ">复制成功！</span>
+        </h3>
+        <div class="btnBox"></div>
+    </div>
+</div>
+
+<script src="../../static/libs/clipboard/clipboard.min.js"></script>
+
+<script>
+
+    var tj = document.querySelector('.tj');
+
+    var btnBox = document.querySelector('.btnBox');
+
+
+    var can = false;
+
+    var tmpS = [];
+    var show_data = [];
+    var total_str = '';
+    var FinalArr = [];
+
+    // 点击提交
+    _addEvent(tj,'click', function(){
+
+        var fw = document.querySelector('input[name="fw"]:checked');
+        var prefix = document.querySelector('.prefix');
+        var preContent = document.querySelector('.preContent');
+        var sufContent = document.querySelector('.sufContent');
+        var suffix = document.querySelector('.suffix');
+        var gnu = document.querySelector('.gnu');
+
+        show_data=[];
+        btnBox.innerHTML = '';
+        FinalArr = [];
+
+        var fwv = fw.value;
+        var pv = prefix.value;
+        var pcv = preContent.value;
+        var scv = sufContent.value;
+        var sv = suffix.value;
+        var gnuv = gnu.value;
+
+        // 检测
+        // 1. 前缀
+        if (!pcv && !scv) {
+            alert(`请填写 "前置" 或 "后置" 内容`);return;
+        }
+
+        if (! sv.trim()) {
+            alert(`请填写 "域名后缀"`);return;
+        }
+
+        showData(fwv, pv , pcv, scv, sv, gnuv);
+
+    });
+
+    /**
+     * 数据展示
+     * @param  {[type]} fwv  范围
+     * @param  {[type]} pv   前缀
+     * @param  {[type]} pcv  前置内容
+     * @param  {[type]} scv  后置内容
+     * @param  {[type]} sv   后缀
+     * @param  {[type]} gnuv 每组数量
+     * @return {[type]}      [description]
+     */
+    function showData(fwv, pv , pcv, scv, sv, gnuv){
+
+        if (pv) {pv=pv+'.'}
+
+        var az = 'abcdefghijklmnopqrstuvwxyz';
+        var numberStr = '0123456789';
+        var areaArr = ['bj','sh','tj','cq','qh','sx','nmg','hb','xj','gs','gd','fj','tw','hn','nx','hn','sd','sx','ah','hb','hlj','jl','ln','hn','js','sc','gz','yn','gx','xz','zj','jx','xg','am'];
+
+        // 一共有多少个数据
+        var totalNu = 0;
+        // 一共有多少个组
+        var groupNu = 0;
+
+        // 范围
+        switch(fwv){
+            case "1": // 00-09
+                totalNu = 10;_get01(totalNu);
+                break;
+            case "2": // 001-100
+                totalNu = 100;_get001(totalNu);
+                break;
+            case "3": // 1-100
+                totalNu = 100;_get1(totalNu);
+                break;
+            case "4": // 1-1000
+                totalNu = 1000;_get1(totalNu);
+                break;
+            case "5": // 1-10000
+                totalNu = 10000;_get1(totalNu);
+                break;
+            case "6": // 0001-1000
+                totalNu = 1000;_get0001(totalNu);
+                break;
+            case "7": // 00001-10000
+                totalNu = 10000;_get00001(totalNu);
+                break;
+            case "8": // a-z
+                totalNu = 26;_get_a_z();
+                break;
+            case "9": // aa-zz
+                totalNu = 26;_get_aa_zz();
+                break;
+            case "10": // aaa-zzz
+                totalNu = 26;_get_aaa_zzz();
+                break;
+            case "11": // 00-99
+                totalNu = 10;_get_00_99();
+                break;
+            case "12": // 000-999
+                totalNu = 10;_get_000_999();
+                break;
+            case "13": // 0-9
+                totalNu = 10;_get_0_9();
+                break;
+            case "14": // 地区首字母
+                totalNu = 34;_get_province();
+                break;
+            case "15": // 00-09
+                totalNu = 10;_get_00_09();
+                break;
+            case "16": // 000-009
+                totalNu = 10;_get_000_009();
+                break;
+            case "17": // 0000-9999
+                totalNu = 10;_get_0000_9999();
+                break;
+            case "18": // (a-z)(0-9)
+                totalNu = 260;_get_az_09();
+                break;
+            case "19": // aaaa-zzzz
+                totalNu = 26;_get_aaaa_zzzz();
+        }
+
+        function _get_aaaa_zzzz(){
+
+            for (var i = 0; i < az.length; i++) {
+                show_data.push(pv+pcv+az[i]+az[i]+az[i]+az[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_az_09(){
+
+            for (var i = 0; i < az.length; i++) {
+                for (var j = 0; j < numberStr.length; j++) {
+                    show_data.push(pv+pcv+az[i]+numberStr[j]+scv+'.'+sv);
+                }
+            }
+        }
+
+        function _get_0000_9999(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+numberStr[i]+numberStr[i]+numberStr[i]+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_000_009(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+"00"+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_00_09(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+"0"+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_province(){
+
+            for (var i = 0; i < areaArr.length; i++) {
+                show_data.push(pv+pcv+areaArr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_000_999(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+numberStr[i]+numberStr[i]+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+
+        function _get_00_99(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+numberStr[i]+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_0_9(){
+
+            for (var i = 0; i < numberStr.length; i++) {
+                show_data.push(pv+pcv+numberStr[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_aaa_zzz(){
+
+            for (var i = 0; i < az.length; i++) {
+                show_data.push(pv+pcv+az[i]+az[i]+az[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_aa_zz(){
+
+            for (var i = 0; i < az.length; i++) {
+                show_data.push(pv+pcv+az[i]+az[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get_a_z(){
+
+            for (var i = 0; i < az.length; i++) {
+                show_data.push(pv+pcv+az[i]+scv+'.'+sv);
+            }
+        }
+
+        function _get00001(nu){
+            for (var i = 1; i <= nu; i++) {
+                // console.log(i.length);
+                if(i.toString().length == 1){
+                    show_data.push(pv+pcv+"0000"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 2){
+                    show_data.push(pv+pcv+"000"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 3){
+                    show_data.push(pv+pcv+"00"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 4){
+                    show_data.push(pv+pcv+"0"+i+scv+'.'+sv);
+                }
+                if(i.toString().length >= 5){
+                    show_data.push(pv+pcv+i+scv+'.'+sv);
+                }
+            }
+        }
+
+        function _get0001(nu){
+            for (var i = 1; i <= nu; i++) {
+                // console.log(i.length);
+                if(i.toString().length == 1){
+                    show_data.push(pv+pcv+"000"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 2){
+                    show_data.push(pv+pcv+"00"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 3){
+                    show_data.push(pv+pcv+"0"+i+scv+'.'+sv);
+                }
+                if(i.toString().length >= 4){
+                    show_data.push(pv+pcv+i+scv+'.'+sv);
+                }
+            }
+        }
+
+        function _get001(nu){
+            for (var i = 1; i <= nu; i++) {
+                // console.log(i.length);
+                if(i.toString().length == 1){
+                    show_data.push(pv+pcv+"00"+i+scv+'.'+sv);
+                }
+                if(i.toString().length == 2){
+                    show_data.push(pv+pcv+"0"+i+scv+'.'+sv);
+                }
+                if(i.toString().length >= 3){
+                    show_data.push(pv+pcv+i+scv+'.'+sv);
+                }
+            }
+        }
+
+        function _get01(nu){
+            for (var i = 1; i <= nu; i++) {
+                // console.log(i.length);
+                if(i.toString().length == 1){
+                    show_data.push(pv+pcv+"0"+i+scv+'.'+sv);
+                }
+                if(i.toString().length >= 2){
+                    show_data.push(pv+pcv+i+scv+'.'+sv);
+                }
+            }
+        }
+
+        function _get1(nu){
+            // console.log(typeof fwv);
+            for (var i = 1; i <= nu; i++) {
+                show_data.push(pv+pcv+i+scv+'.'+sv);
+            }
+        }
+
+
+        /**
+         * 思路
+         *
+         * 1. 先按分组个数分组，每组有多少个数据
+         * 2. 分多少个组就有多少个按钮
+         * 3. 点击按钮就提取数组的key对应的value
+         */
+
+        // 直接分配数据，不用分配按钮
+        // 分配数据
+        if (totalNu >= gnuv) {
+            // 实际上有多少组数据，有余数向上取整
+            groupNu = Math.ceil(totalNu/gnuv);
+            // console.log(groupNu);
+        }
+        else {
+            // 只有一个按钮
+            groupNu = 1;
+        }
+
+        // console.log(typeof Number(gnuv)); // String 这个传过来是字符串，要强制类型转换为数字
+
+        FinalArr = spArray(Number(gnuv), show_data);
+        // console.log(FinalArr);
+
+        var FinalStr = '';
+        FinalArr.forEach(function(element,item){
+            // console.log(item,element);
+
+            // 头
+            var start = item*gnuv + 1;
+
+
+            // 尾
+            var end = (item+1)*gnuv;
+            if (totalNu<=end) {
+                end = totalNu;
+            }
+
+            if (fwv=="1" && start.toString().length == 1) {
+                // console.log(start);
+                // console.log(typeof start);
+                start = "0" + start;
+            }
+            if (fwv=="2") {
+                if (start.toString().length == 1) {
+                    start = "00" + start;
+                }
+                if (start.toString().length == 2) {
+                    start = "0" + start;
+                }
+
+                if (end.toString().length == 1) {
+                    end = "00" + end;
+                }
+                if (end.toString().length == 2) {
+                    end = "0" + end;
+                }
+            }
+
+            if (fwv=="6") {
+                if (start.toString().length == 1) {
+                    start = "000" + start;
+                }
+                if (start.toString().length == 2) {
+                    start = "00" + start;
+                }
+                if (start.toString().length == 3) {
+                    start = "0" + start;
+                }
+
+                if (end.toString().length == 1) {
+                    end = "000" + end;
+                }
+                if (end.toString().length == 2) {
+                    end = "00" + end;
+                }
+                if (end.toString().length == 3) {
+                    end = "0" + end;
+                }
+            }
+
+            if (fwv=="7") {
+                if (start.toString().length == 1) {
+                    start = "0000" + start;
+                }
+                if (start.toString().length == 2) {
+                    start = "000" + start;
+                }
+                if (start.toString().length == 3) {
+                    start = "00" + start;
+                }
+                if (start.toString().length == 4) {
+                    start = "0" + start;
+                }
+
+                if (end.toString().length == 1) {
+                    end = "0000" + end;
+                }
+                if (end.toString().length == 2) {
+                    end = "000" + end;
+                }
+                if (end.toString().length == 3) {
+                    end = "00" + end;
+                }
+                if (end.toString().length == 4) {
+                    end = "0" + end;
+                }
+            }
+
+            // 直接把要复制的数据压入进去
+
+            var tmpStr = '';
+            for (var i = 0; i < element.length; i++) {
+                tmpStr += element[i]+'\n';
+            }
+
+            // console.log(tmpStr);
+
+            // 拼接按钮标签，拿到数组的key
+            FinalStr += `<button class="g_btn copy" key='${item}' data-clipboard-text='${tmpStr.trim()}'>${start}-${end}</button>`;
+        });
+
+        btnBox.innerHTML = FinalStr;
+
+        // console.log(FinalStr);
+
+        if (btnBox.innerHTML != '') {
+            var g_btns = document.querySelectorAll('.g_btn');
+
+            g_btns.forEach(function(element,item){
+                // console.log(item,element);
+                _addEvent(element,'click',function(){
+
+                    var _this = this;
+                    _this.style.borderColor = "red";
+
+                    // 重置
+                    tmpS = [];
+
+                    var isjump = document.querySelector('input[name="isjump"]:checked');
+
+                    // console.log(isjump.value == '2');return;
+                    // console.log(typeof isjump.value);return;
+
+                    if (isjump.value == '2') {
+
+                        var opData = _this.getAttribute("data-clipboard-text");
+                        opData = opData.split("\n");
+                        opData.reverse();
+
+                        tmpS = opData;
+
+                        // console.log("跳");
+
+                    }
+
+                });
+            });
+        }
+    }
+
+    var timer = null;
+    var _Jn = 0;
+
+    function _open(i){
+
+        if (_Jn >= tmpS.length) {timer = null;console.log('haha');return;}
+        window.open("http://"+tmpS[_Jn],'_blank');
+        // console.log("http://"+tmpS[_Jn]);
+
+        timer = setTimeout(function() {
+            _open(++_Jn);
+        }, 50);
+    }
+
+
+    var clipboard = new ClipboardJS('.copy');
+    clipboard.on('success', function (e) {
+        // console.log('复制成功');
+        document.querySelector('.cp-succ').style.display = 'inline';
+        setTimeout(function(){
+            document.querySelector('.cp-succ').style.display = 'none';
+            if (tmpS.length>0) {
+
+                _Jn = 0;
+                _open(0);
+            }
+        },500);
+
+    });
+    clipboard.on('error', function (e) {
+        alert(e);
+    });
+
+
+    // 数组切割
+    function spArray(N,Q){
+
+        var R = [],F;
+
+        for (F = 0;F < Q.length;) {
+
+            R.push(Q.slice(F,F += N));
+
+        }
+
+        return R;
+
+    }
+
+    // 添加事件(兼容写法)
+    function _addEvent(obj, type, fun) {
+        if(obj.addEventListener) {
+            obj.addEventListener(type, fun, false);
+        } else {
+            obj.attachEvent("on" + type, fun);
+        }
+    }
+    // 移除事件(兼容写法)
+    function _removeEvent(obj, type, fun) {
+        if(obj.removeEventListener) {
+            obj.removeEventListener(type, fun, false);
+        }else{
+            obj.detachEvent("on" + type, fun);
+        }
+    }
+</script>
+
+</body>
+</html>
