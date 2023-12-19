@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,17 +14,55 @@
 
 <div class="app">
     <div class="header d-flex justify-content-center align-items-center">
-        <div class="title h3">你好，欢迎访问！（Hi, welcome to visit this page!）</div>
+        <div class="title h3">你好，欢迎访问本站！（Hi there, welcome to visit this website!）</div>
     </div>
     <div class="main">
-        <div class="callout callout-primary">这是关于一些学习、文章和小工具的网站（This is a website about learning, articles and gadgets.）</div>
+        <div class="callout callout-primary">这是一个关于一些学习、文章和小工具的网站（This is a website about learning, articles and gadgets.）</div>
 
-        <div class="learnbox">
 
+        <div class="typebox p-4">
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            学习模块（Learning Module）
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <a href="./module/learn/learn_tagalog.html" target="_blank">Learn Tagalog</a>
+                            <!-- <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow. -->
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            文章模块（Article Module）
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            工具模块（Learning Module）
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="toolbox"></div>
     </div>
-    <div class="footer text-center">By <a href="https://github.com/momodababy" target="_blank">@momodababy</a> 本页面托关于 <a href="https://pages.github.com/" target="_blank">Github Pages</a></div>
+    <div class="footer d-flex justify-content-center align-items-center">By <a href="https://github.com/momodababy" target="_blank">@momodababy</a> 本页面托关于<a href="https://pages.github.com/" target="_blank">Github Pages</a></div>
 </div>
 
 

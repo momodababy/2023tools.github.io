@@ -102,16 +102,22 @@ html,body{
     height: 100vh;
 }
 
+/*header*/
 .header {
     height: 80px;
 }
 
+/*main*/
 .main {
     width: 1200px;
     margin: 0 auto;
 }
 
+.typebox {
+/*    padding: 20px;*/
+}
 
+/*footer*/
 .footer {
     height: 10rem;
 }
