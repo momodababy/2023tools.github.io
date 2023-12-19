@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>域名整理</title>
+    <link href="../../static/libs/bootstrap/5.3.2/bootstrap.min.css" rel="stylesheet">
+    <link href="../../static/libs/toastr/toastr.min.css" rel="stylesheet">
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div>
+            <div class="row text-center" style="margin-top:30px;margin-bottom:20px;">
+                <div class="col-md-12">
+                    <h3>域名整理</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12"><textarea style="font-size: 0.9rem;" id="content" class="form-control" placeholder="请在这里粘贴需要处理的大量不规则网址
+或者是html源码
+或者是任何字符串
+
+以下域名可成功解析:
+www.a.com
+https://你好.中国
+aaa.website
+111.срб
+111.xn--90a3ac
+www.5678.рф
+www.5678.xn--p1ai
+" rows="13"></textarea></div>
+                <!-- <div class="col-md-12"><textarea id="content" class="form-control" placeholder="请在这里粘贴需要处理的大量不规则网址
+或者是html源码
+或者是任何字符串" rows="13">www.aozhouyu.com</textarea></div> -->
+            </div>
+            <div class="row" style="margin-top:20px">
+                <div class="col-md-12 text-center">
+                    <!-- <button type="submit" class="btn btn-danger" id="btn2" style="margin:5px;">提取文本中的url</button> -->
+                    <!-- <button type="submit" class="btn btn-danger" id="btn9" style="margin:5px;">规范 && www</button> -->
+                    <button type="submit" class="btn btn-danger" id="btn8" style="margin:5px;">添加协议</button>
+                    <button type="submit" class="btn btn-danger" id="btn10" style="margin:5px;">去掉协议</button>
+                    <button type="submit" class="btn btn-danger" id="btn0" style="margin:5px;">添加前缀</button>
+                    <!-- <button type="submit" class="btn btn-danger" id="btn1" style="margin:5px;">添加后缀</button> -->
+                    <button type="submit" class="btn btn-danger" id="btn11" style="margin:5px;">移除www</button>
+                    <button type="submit" class="btn btn-danger" id="btn3" style="margin:5px;">网址规范化</button>
+                    <!-- <button type="submit" class="btn btn-danger" id="btn4" style="margin:5px;">网址转小写</button> -->
+                    <button type="submit" class="btn btn-primary" id="copy" data-clipboard-target="#shuchu" style="margin:10px;">复制结果</button>
+                    <!-- <button type="submit" class="btn btn-primary" id="btn5" style="margin:5px;">导出结果</button> -->
+                    <button type="submit" class="btn btn-primary" id="btn7" style="margin:5px;">清空输入</button>
+                    <button type="submit" class="btn btn-primary" id="btn6" style="margin:5px;">全部清空</button>
+                </div>
+            </div>
+            <div class="row" style="margin-top:20px">
+                <div class="col-md-12"><textarea class="form-control" rows="13" id="shuchu" style="font-size: 0.9rem;" placeholder="处理结果显示处"></textarea></div>
+            </div><a onfocus="this.blur();" download="域名整理.txt" id="createInvote" class="ipt-todo hide d-none">导出结果</a>
+        </div>
+
+        <div class="modal fade" id="prefix" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">域名前缀设置</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="inputprefix" class="col-form-label">填写前缀（不用加点）:</label>
+                                <input type="text" class="form-control" id="inputprefix" placeholder="请输入需要添加的域名前缀" value="m"></div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="buttonprefix">确定</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../static/libs/jquery/3.7/jquery.min.js"></script>
+    <script src="../../static/libs/bootstrap/5.3.2/bootstrap.bundle.min.js"></script>
+    <script src="../../static/libs/toastr/toastr.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("[data-toggle='tooltip']").tooltip();
+        });
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.options.progressBar = true;
+    </script>
+    <script src="../../static/libs/clipboard/clipboard.min.js"></script>
+    <script src="../../static/js/urlcheck.js"></script>
+    <script type="text/javascript">
+
+        /**
+        * str { String } 完整字符串
+        * tatget { String } 目标对象，要查找的字符串
+        */
+        function searchStrEach(str, target) {
+            let sum = 0;
+            for (let key of str) {
+                if (key == target) {
+                    sum++;
+                }
+            }
+            return sum;
+        }
+
+        // 去除特殊字符
+        function Trims(str) {
+            return str.replace(/(^\s*)|(\s*$)/g, "");
+        }
+
+        // 判断是否为空
+        function isEmpty(obj) {
+            if (typeof obj == "undefined" || obj == null || obj == "") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // 数组去重函数
+        function uniq(array) {
+            var temp = [];
+            var index = [];
+            var l = array.length;
+            for (var i = 0; i < l; i++) {
+                for (var j = i + 1; j < l; j++) {
+                    if (array[i] === array[j]) {
+                        i++;
+                        j = i;
+                    }
+                }
+                temp.push(array[i]);
+                index.push(i);
+            }
+            // console.log(index);
+            return temp;
+        }
+
+
+        function url2domain(t) {
+            return t.toLowerCase().replace("http://", "").replace("https://", "").replace("//", "").split("/")[0].split(":")[0].split("?")[0].replace(/\s/g, "");
+        }
+
+        // 保留了端口号
+        function url2domain1(t) {
+            var myReg = /.+:(\d{1,5})/;
+            // var myStr = 'http://1.2.3.4:8080';
+            // var myResult = myStr.match(myReg);
+            var port = t.match(myReg) ? (t.match(myReg))[1] : '';
+            // console.log(t.match(myReg));
+            // console.log(port);
+
+            if (! port) {
+                return t.toLowerCase().replace("http://", "").replace("https://", "").replace("//", "").split("/")[0].split(":")[0].split("?")[0].replace(/\s/g, "");
+            }
+            else {
+                return t.toLowerCase().replace("http://", "").replace("https://", "").replace("//", "").split("/")[0].split(":")[0].split("?")[0].replace(/\s/g, "") + ":" + port;
+            }
+
+        }
+
+
+
+        /***** 添加前缀 - 开始 *****/
+        $("#btn0").bind("click",
+            function() {
+                var inputcontent = $("#content").val();
+                if (isEmpty(inputcontent)) {
+                    toastr.error("请先输入需要批量处理的域名！");
+                    return false;
+                }
+                $('#prefix').modal('show');
+            });
+        $("#buttonprefix").bind("click",
+            function() {
+                var inputprefixvalue = $("#inputprefix").val();
+                if (isEmpty(inputprefixvalue)) {
+                    toastr.warning("什么都没有填呢,哥,不添加前缀,请点击取消!");
+                    return false;
+                }
+                //alert("test");
+                $('#prefix').modal('hide');
+                //这里开始对输入的数据进行逻辑处理
+                var inputcontent = $("#content").val();
+                // console.log(inputcontent);
+                var arry = inputcontent.trim().split('\n')
+                var box = "";
+                for (i = 0; i < arry.length; i++) {
+                    var resaut = inputprefixvalue+"." + arry[i];
+                    box += resaut + "\n";
+                }
+                $("#shuchu").val(box.trim());
+                return false
+            });
+        /***** 添加前缀 - 结束 *****/
+
+        /***** 添加后缀 - 开始 *****/
+        $("#btn1").bind("click",
+            function() {
+                var inputcontent = $("#content").val();
+                if (isEmpty(inputcontent)) {
+                    toastr.error("请先输入需要批量处理的域名@！");
+                    return false;
+                }
+                $('#subfix').modal('show');
+            });
+        $("#buttonsubfix").bind("click",
+            function() {
+                var inputprefixvalue = $("#inputsubfix").val();
+                if (isEmpty(inputprefixvalue)) {
+                    toastr.warning("什么都没有填呢,哥,不添加前缀,请点击取消!");
+                    return false;
+                }
+                $('#subfix').modal('hide');
+                //这里开始对输入的数据进行逻辑处理
+                var inputcontent = $("#content").val();
+                var arry = inputcontent.trim().split('\n');
+                var box = "";
+                for (i = 0; i < arry.length; i++) {
+                    var resaut = arry[i] + inputprefixvalue;
+                    box += resaut + "\n";
+                }
+                $("#shuchu").val(box.trim());
+            });
+        /***** 添加后缀 - 结束 *****/
+
+        /***** 提取文本中的url - 开始 *****/
+        $("#btn2").bind("click", function() {
+            var content = $("#content").val();
+            //检测用户输入
+            if (isEmpty(content)) {
+                toastr.error("抱歉,亲爱的,你还什么都没有输入,没办法提取url");
+                return false;
+            }
+            var reg = /\/\/([^/"']*)/ig;
+            var arry = content.match(reg);
+            if (isEmpty(arry)) {
+                toastr.warning("抱歉,您提供的文本,没有发现url！")
+                return false;
+            }
+            arry = uniq(arry);
+            var box = "";
+            var nb = 0;
+            for (i = 0; i < arry.length; i++) {
+                //这里对正则出的域名进行验证
+                var resaut = arry[i].replace("//", "");
+                if (isDomain(resaut)) {
+                    box += resaut + "\n";
+                    nb++;
+                }
+            }
+            if (isEmpty(box)) {
+                toastr.warning("抱歉,您提供的文本,没有发现url！")
+                return false;
+            }
+            //计算找到的url数量
+            toastr.info("恭喜,您提供的文本共发现" + nb + "个不重复域名");
+            $("#shuchu").val(box);
+        });
+        /***** 提取文本中的url - 结束 *****/
+
+        /***** 移除www - 开始 *****/
+        $("#btn11").bind("click", function() {
+            //对用户输入的有把握的域名,只进行规范化,和检测域名是否有效然后输出
+            var inputcontent = $("#content").val();
+            if (isEmpty(inputcontent)) {
+                toastr.error("哥,你还什么都没有输入");
+                return false;
+            }
+            var arry = inputcontent.trim().split('\n');
+            var box = "";
+            var yes = 0;
+            var no = 0;
+            var arr = [];
+            for (i = 0; i < arry.length; i++) {
+                var resaut = arry[i];
+                // resaut = my_deal(resaut);
+
+                resaut = url2domain(resaut);
+                // console.log(resaut);
+
+                if (__iisURL(resaut)) {
+
+                    // 移除www.
+                    if (resaut.startsWith("www.") && searchStrEach(resaut, '.')>=2) { // 判断是否以www开头
+
+                        resaut = resaut.substring(4);
+                        // console.log(searchStrEach(resaut, '.')>=2);
+
+                        if (! isInArray2(arr,resaut)) {
+                            // console.log('不在1');
+
+                            arr.push(resaut);
+
+                            yes++;
+                            box += resaut + "\n";
+                        }
+                    }
+
+                    if (! isInArray2(arr,resaut)) {
+
+                        arr.push(resaut);
+
+                        yes++;
+                        box += resaut + "\n";
+                    }
+
+                } else {
+                    no++;
+                }
+            }
+            if (yes == 0) {
+                toastr.warning("嗨,经过规范,没有发现一个有效的网址,可能是我错了!");
+                return false;
+            } else {
+                toastr.info("经处理,共成功了" + yes + "个域名，丢弃了" + no + "个域名");
+            }
+            $("#shuchu").val(box.trim());
+        });
+        /***** 移除www - 结束 *****/
+
+        /***** 网址规范化 - 开始 *****/
+        $("#btn3").bind("click", function() {
+            //对用户输入的有把握的域名,只进行规范化,和检测域名是否有效然后输出
+            var inputcontent = $("#content").val();
+            if (isEmpty(inputcontent)) {
+                toastr.error("哥,你还什么都没有输入");
+                return false;
+            }
+            var arry = inputcontent.trim().split('\n');
+            var box = "";
+            var yes = 0;
+            var no = 0;
+            var arr = [];
+            for (i = 0; i < arry.length; i++) {
+                var resaut = arry[i];
+                resaut = my_deal(resaut);
+
+                resaut = url2domain(resaut);
+                // console.log(resaut);
+                // if (isDomain(resaut)) {
+                if (__iisURL(resaut)) {
+                    if (! isInArray2(arr,resaut)) {
+                        // console.log('不在1');
+
+                        arr.push(resaut);
+
+                        yes++;
+                        box += resaut + "\n";
+                    }
+
+                } else {
+                    // 这里可以查看不符合条件的域名
+                    console.log(resaut);
+                    no++;
+                }
+            }
+            if (yes == 0) {
+                toastr.warning("嗨,经过规范,没有发现一个有效的网址,可能是我错了!");
+                return false;
+            } else {
+                toastr.info("经处理,共成功了" + yes + "个域名，丢弃了" + no + "个域名");
+            }
+            $("#shuchu").val(box.trim());
+        });
+        /***** 网址规范化 - 结束 *****/
+
+
+
+        function my_deal(obj) {
+            // 去除 "查询同ip域名复制后带有时间的字符串" 中的时间
+            if (obj.indexOf('-----') != -1) {
+
+                obj = obj.substr(25);
+            }
+
+            // 去除ip
+            obj = obj.replace(/(\d{1,3}\.){3}\d{1,3}/g, "");
+
+            // 去除tab
+            obj = obj.replace(/\t/g,"");
+
+            // 去除日期时间
+            obj = obj.replace(/\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}/g,"");
+
+            return obj;
+        }
+
+        /**
+         * 使用jquery的inArray方法判断元素是否存在于数组中
+         * @param {Object} arr 数组
+         * @param {Object} value 元素值
+         */
+        function isInArray2(arr, value) {
+            var index = $.inArray(value, arr);
+            if (index >= 0) {
+                return true;
+            }
+            return false;
+        }
+
+
+        // 去掉协议
+        function delProtocol(url) {
+            return url.replace(/^https?\:\/\//i, "");
+        }
+
+
+        // 添加协议
+        function addProtocol(url) {
+            if(url.substr(0,7).toLowerCase() == "http://" || url.substr(0,8).toLowerCase() == "https://"){
+                url = url;
+            }else{
+                url = "http://" + url;
+            }
+
+            return url;
+        }
+
+        /***** 去掉协议 - 开始 *****/
+        $("#btn10").bind("click", function() {
+            //这个简单
+            var inputcontent = $("#content").val();
+            if (isEmpty(inputcontent)) {
+                toastr.error("请您输入网址");
+                return false;
+            }
+
+            var arry = inputcontent.trim().split('\n');
+            var box = "";
+            var yes = 0;
+            var no = 0;
+            var arr = [];
+            for (i = 0; i < arry.length; i++) {
+                var resaut = arry[i];
+                // resaut = my_deal(resaut);
+
+                resaut1 = url2domain(resaut);
+                // console.log(resaut);
+
+                resaut = delProtocol(resaut);
+                // console.log(resaut);
+
+                // 需要先把各个东西都去掉才能判断，所以用resaut1
+                if (__iisURL(resaut1)) {
+                    if (! isInArray2(arr,resaut)) {
+
+                        // 如果以斜线结尾，则去掉
+                        if (resaut.endsWith("/")) {
+                            resaut = resaut.slice(0,-1);
+                            // console.log(resaut);
+                        }
+
+                        arr.push(resaut);
+
+                        yes++;
+                        box += resaut + "\n";
+                    }
+
+                } else {
+                    console.log(resaut);
+                    no++;
+                }
+            }
+            if (yes == 0) {
+                toastr.warning("嗨,经过规范,没有发现一个有效的网址,可能是我错了!");
+                return false;
+            } else {
+                toastr.info("经处理,共成功了" + yes + "个域名，丢弃了" + no + "个域名");
+            }
+            $("#shuchu").val(box.trim());
+        });
+        /***** 去掉协议 - 结束 *****/
+
+        /***** 网址转小写 - 开始 *****/
+        $("#btn4").bind("click", function() {
+            //这个简单
+            var content = $("#content").val();
+            if (isEmpty(content)) {
+                toastr.error("哥,你还什么都没有输入");
+            }
+            $("#shuchu").val(content.toLowerCase());
+        });
+        /***** 网址转小写 - 结束 *****/
+
+        /***** 导出结果 - 开始 *****/
+        $("#btn5").bind("click", function() {
+            var jieguo = $("#shuchu").val();
+            if (isEmpty(jieguo)) {
+                toastr.error("什么都没有,什么都没有,什么都没有,不能导出");
+                return false;
+            }
+            jieguo = jieguo.replace("\n", "\r\n");
+            var isIE = (navigator.userAgent.indexOf('MSIE') >= 0);
+            if (isIE) {
+                var winSave = window.open();
+                winSave.document.open("text", "utf-8");
+                winSave.document.write(jieguo);
+                winSave.document.execCommand("SaveAs", true, "域名处理结果.txt");
+                winSave.close();
+            } else {
+                var mimeType = 'text/plain';
+                $('#createInvote').attr('href', 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(jieguo));
+                document.getElementById('createInvote').click();
+            }
+            return false
+        });
+        /***** 导出结果 - 结束 *****/
+
+        /***** 清空输入 - 开始 *****/
+        $("#btn7").bind("click", function() {
+            document.getElementById('content').value = '';
+            document.getElementById('content').select();
+            return;
+        });
+        /***** 清空输入 - 结束 *****/
+
+        /***** 全部清空 - 开始 *****/
+        $("#btn6").bind("click", function() {
+            $("#content").val("").select();
+            $("#shuchu").val("");
+        });
+        /***** 全部清空 - 结束 *****/
+
+        /***** 添加协议 - 开始 *****/
+        $("#btn8").bind("click", function() {
+            //这个简单
+            var inputcontent = $("#content").val();
+            if (isEmpty(inputcontent)) {
+                toastr.error("请您输入网址");
+                return false;
+            }
+
+            var arry = inputcontent.trim().split('\n');
+            var box = "";
+            var yes = 0;
+            var no = 0;
+            var arr = [];
+            for (i = 0; i < arry.length; i++) {
+                var resaut = arry[i];
+
+                resaut1 = url2domain(resaut);
+
+                resaut = delProtocol(resaut);
+
+                // 需要先把各个东西都去掉才能判断，所以用resaut1
+                if (__iisURL(resaut1)) {
+                    if (! isInArray2(arr,resaut)) {
+
+                        // 如果以斜线结尾，则去掉
+                        if ( !(resaut.startsWith("http://") || resaut.startsWith("https://")) ) {
+                            resaut = addProtocol(resaut);
+                        }
+
+                        arr.push(resaut);
+
+                        yes++;
+                        box += resaut + "\n";
+                    }
+
+                } else {
+                    console.log(resaut);
+                    no++;
+                }
+            }
+            if (yes == 0) {
+                toastr.warning("嗨,经过规范,没有发现一个有效的网址,可能是我错了!");
+                return false;
+            } else {
+                toastr.info("经处理,共成功了" + yes + "个域名，丢弃了" + no + "个域名");
+            }
+            $("#shuchu").val(box.trim());
+        });
+        /***** 添加协议 - 结束 *****/
+
+        /***** 规范 && www - 开始 *****/
+        $("#btn9").bind("click", function() {
+            //对用户输入的有把握的域名,只进行规范化,和检测域名是否有效然后输出
+            var inputcontent = $("#content").val();
+            if (isEmpty(inputcontent)) {
+                toastr.error("哥,你还什么都没有输入");
+                return false;
+            }
+            var arry = inputcontent.trim().split('\n');
+            var box = "";
+            var yes = 0;
+            var no = 0;
+            var arr = [];
+            for (i = 0; i < arry.length; i++) {
+                var resaut = arry[i];
+                // resaut = my_deal(resaut);
+
+                resaut = url2domain(resaut);
+
+                if (__iisURL(resaut)) {
+                    if (! isInArray2(arr,resaut)) {
+
+                        arr.push(resaut);
+
+                        var deal_bool = false;
+                        var deal_www = dealwww(resaut);
+
+                        if (! isInArray2(arr,deal_www)) {
+                            deal_bool = true;
+                            arr.push(deal_www);
+                        }
+
+                        yes++;
+
+                        box += resaut + "\n";
+
+                        if (deal_bool) {
+                            box += deal_www + "\n";
+                            yes++;
+                        }
+
+                    }
+
+                } else {
+                    no++;
+                }
+            }
+            if (yes == 0) {
+                toastr.warning("嗨,经过规范,没有发现一个有效的网址,可能是我错了!");
+                return false;
+            } else {
+                toastr.info("经处理,共成功了" + yes + "个域名，丢弃了" + no + "个域名");
+            }
+            $("#shuchu").val(box.trim());
+        });
+        /***** 规范 && www - 结束 *****/
+
+
+        // console.log(countSubstr('www.www.com', '.'));
+        function dealwww(str) {
+            var str1 = '';
+            // 满足以www.开头并且包含的点(.)的个数大于1
+
+            // 如果不带www，判断带www的是否在数组里，如果不在，则加上
+            if (countSubstr(str, '.') == 1) { // 顶级域名
+                str1 = 'www.' + str;
+            }
+            else {
+                // 判断是不是以www.开头的
+                if (new RegExp("^www\..*$").test(str)) {
+                    // console.log('a');
+                    str1 = findStrSubtring(str, '.', 0);
+            // console.log(str1);
+                }
+                else {
+                    // console.log('b');
+                    str1 = str;
+                }
+            }
+
+            // 如果带www，判断不带www的是否在数组里，如果不在，则加上
+
+            // console.log(str1);
+
+            return str1;
+
+        }
+
+
+        // console.log(findStrSubtring("www.www1.com", '.', '0'));
+        //js截取字符串中指定字符串第n次出现的位置到结束
+        function findStrSubtring(str, cha, num) {
+            var x = str.indexOf(cha);
+            for (var i = 0; i < num; i++) {
+                x = str.indexOf(cha, x + 1);
+            }
+            return str.substring(x + 1, str.length);
+        }
+
+        // console.log(countSubstr('www.www.com', '.'));
+        // 判断字符串中某串出现次数
+        function countSubstr(str, substr) {
+            var index = str.indexOf(substr); // 字符出现的位置
+            var num = 0; // 这个字符出现的次数
+            while(index !== -1) {
+                // console.log(index); // 打印字符串出现的位置
+                num++; // 每出现一次 次数加一
+                index = str.indexOf(substr, index + 1); // 从字符串出现的位置的下一位置开始继续查找
+            }
+
+            return num;
+        }
+
+        // var old_url = "https://baidu.com/?a=1&b=2";
+
+        // console.log(old_url.substring(0, old_url.indexOf('?'))); // 去掉URL多有参数
+
+        /***** 复制插件 - 开始 *****/
+        var clipboard = new ClipboardJS('#copy');
+        clipboard.on('success', function(e) {
+            if (e.text != "") {
+                toastr.success("复制成功");
+            } else {
+                toastr.warning("什么都没有,无法复制");
+            }
+        });
+
+        clipboard.on('error', function(e) {
+            toastr.error("复制失败");
+        });
+        /***** 复制插件 - 结束 *****/
+    </script>
+
+</body>
+
+</html>
