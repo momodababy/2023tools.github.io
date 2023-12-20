@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Language" content="zh">
+    <title>数据对比</title>
+
+    <link href="../../static/libs/bootstrap/5.3.2/bootstrap.min.css" rel="stylesheet">
+    <script src="../../static/libs/jquery/3.7/jquery.min.js"></script>
+
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" style='width:1200px'>
+
+        <h3 class="text-center" style="padding-top: 20px;">数据对比</h3>
+        <hr>
+
+        <div>
+            <div class="row">
+                <div class="col">
+                    A文本
+                    <textarea class="form-control" style='height:300px' id="leftcols"></textarea>
+                </div>
+                <div class="col">
+                    B文本
+                    <textarea class="form-control" style='height:300px' id="rightcols"></textarea>
+                </div>
+            </div>
+            <div class="" style="margin: 10px 0;">
+                <button id='duibichayi' class='btn btn-primary'>对比</button>
+                <button id='duibiclear' class='btn btn-primary' style="margin-left: 10px;">清空</button>
+            </div>
+        </div>
+
+        <div style="color: red; font-size: 18px;" class="fw-bold">结果：</div>
+
+        <div class="row">
+
+            <div class="col">
+                A存在，B不存在:
+                <textarea class="form-control" style='height:300px' id="leftdis"></textarea>
+            </div>
+
+            <div class="col">
+                A和B都存在:
+                <textarea class="form-control" style='height:300px' id="middledis"></textarea>
+            </div>
+
+            <div class="col">
+                B存在，A不存在:
+                <textarea class="form-control" style='height:300px' id="rightdis"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+<script src="../../static/libs/bootstrap/5.3.2/bootstrap.bundle.min.js"></script>
+<script src="../../static/libs/underscore/underscore-umd-min.js"></script>
+
+<script>
+
+    /**
+     * 最后更新日期：2023-11-26
+     *
+     * 本次更新内容：
+     * 1. 使用第三方库 underscorejs 作为主要工具（https://underscorejs.org/）
+     *
+     * 主要参考文章：
+     * https://www.zhihu.com/question/19863166
+     * https://c.biancheng.net/view/5673.html
+     *
+     * 注意：如果是像这种灵活运用的，一定要用umd的js，其他的都是需要套用到各种模式的！
+     */
+
+    $(document).ready(function() {
+        $("#duibichayi").click(function() {
+            var leftcols = $("#leftcols").val().trim();
+            var rightcols = $("#rightcols").val().trim();
+
+            if (leftcols == "" || rightcols == '') {
+                alert("左右两列不能为空");
+                return false;
+            }
+            var al = leftcols.split("\n");
+            var ar = rightcols.split("\n");
+            var common_exists = '';
+
+            // 交集
+            var co = _.intersection(al,ar);
+
+            // 差集
+            var ld = _.difference(al,ar); // A存在，B不存在
+            var rd = _.difference(ar,al); // B存在，A不存在
+            // console.log(ld);
+            // console.log(ld.join("\n")); // 数组转字符串
+            // console.log(rd.join("\n"));
+
+            $("#leftdis").html(ld.join("\n").trim());
+            $("#middledis").html(co.join("\n").trim());
+            $("#rightdis").html(rd.join("\n").trim());
+        });
+        $("#duibiclear").click(function() {
+            $("#leftcols").val('');
+            $("#rightcols").val('');
+        });
+
+    });
+</script>
+
+</html>
